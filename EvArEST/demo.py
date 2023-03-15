@@ -94,11 +94,11 @@ def demo(opt):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--image_folder', default='demo_image_en/', help='path to image_folder which contains text images')
-    parser.add_argument('--workers', type=int, help='number of data loading workers', default=4)
-    parser.add_argument('--batch_size', type=int, default=100, help='input batch size')
-    parser.add_argument('--saved_model', default='saved_models/TPS-ResNet-BiLSTM-Attn-Seed1111_2/best_accuracy.pth', help="path to saved_model to evaluation")
+    parser.add_argument('--workers', type=int, help='number of data loading workers', default=0)
+    parser.add_argument('--batch_size', type=int, default=64, help='input batch size')
+    parser.add_argument('--saved_model', default='saved_models/TPS-ResNet-BiLSTM-Attn-Seed1111/best_accuracy.pth', help="path to saved_model to evaluation")
     """ Data processing """
-    parser.add_argument('--batch_max_length', type=int, default=25, help='maximum-label-length')
+    parser.add_argument('--batch_max_length', type=int, default=16, help='maximum-label-length')
     parser.add_argument('--imgH', type=int, default=32, help='the height of the input image')
     parser.add_argument('--imgW', type=int, default=100, help='the width of the input image')
     parser.add_argument('--rgb', action='store_true', help='use rgb input')
@@ -121,7 +121,9 @@ if __name__ == '__main__':
     """ vocab / character number configuration """
     if opt.sensitive:
         opt.character = string.printable[:-6]  # same with ASTER setting (use 94 char).
-    # opt.character = '0123456789ابتثححخدذرزسشصضطظعغفقكلنهويئةء'
+    opt.character = '0123456789ابتثحخجدذرزسشصضطظعغفقكلنهويئةءؤ'
+    # opt.character = 'ئحFeءكةىT4)Oبض2زدمصرإ(Spسهآؤd%غقأط./يذ6،X7a *؟ثظ+خ-ش#جتن:ًH؛IRوـا0l9ع8ل!31فU5'
+
 
     cudnn.benchmark = True
     cudnn.deterministic = True

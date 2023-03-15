@@ -39,7 +39,7 @@ def train(opt):
     #_____________________________________________________________________________________
     #Split test into validation set
     total_number_dataset = len(valid_dataset)
-    number_dataset = int(total_number_dataset * float(0.4))
+    number_dataset = int(total_number_dataset * float(0.3))
     dataset_split = [number_dataset, total_number_dataset - number_dataset]
     indices = range(total_number_dataset)
     valid_dataset, _ = [Subset(valid_dataset, indices[offset - length:offset])
@@ -245,10 +245,10 @@ if __name__ == '__main__':
     parser.add_argument('--valid_data', default='dataset/test_ar', help='path to validation dataset')
     parser.add_argument('--manualSeed', type=int, default=1111, help='for random seed setting')
     parser.add_argument('--workers', type=int, help='number of data loading workers', default=0)
-    parser.add_argument('--batch_size', type=int, default=100, help='input batch size')
+    parser.add_argument('--batch_size', type=int, default=64, help='input batch size')
     parser.add_argument('--num_iter', type=int, default=30000, help='number of iterations to train for')
     parser.add_argument('--valInterval', type=int, default=2000, help='Interval between each validation')
-    parser.add_argument('--saved_model', default='', help="path to model to continue training")
+    parser.add_argument('--saved_model', default='saved_models/TPS-ResNet-BiLSTM-Attn-Seed1111/best_accuracy.pth', help="path to model to continue training")
     parser.add_argument('--FT', action='store_true', help='whether to do fine-tuning')
     parser.add_argument('--adam', action='store_true', help='Whether to use adam (default is Adadelta)')
     parser.add_argument('--lr', type=float, default=1, help='learning rate, default=1.0 for Adadelta')
@@ -298,7 +298,8 @@ if __name__ == '__main__':
     os.makedirs(f'./saved_models/{opt.exp_name}', exist_ok=True)
 
     """ vocab / character number configuration """
-    opt.character = '0123456789ابتثححخدذرزسشصضطظعغفقكلنهويئةء'
+    # opt.character = 'ئحFeءكةىT4)Oبض2زدمصرإ(Spسهآؤd%غقأط./يذ6،X7a *؟ثظ+خ-ش#جتن:ًH؛IRوـا0l9ع8ل!31فU5'
+    opt.character = '0123456789ابتثحخجدذرزسشصضطظعغفقكلنهويئةءؤ'
     if opt.sensitive:
         # opt.character += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
         opt.character = string.printable[:-6]  # same with ASTER setting (use 94 char).

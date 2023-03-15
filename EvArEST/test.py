@@ -246,7 +246,7 @@ if __name__ == '__main__':
     parser.add_argument('--eval_data', default='dataset/test_ar', help='path to evaluation dataset')
     parser.add_argument('--benchmark_all_eval', action='store_true', help='evaluate 10 benchmark evaluation datasets')
     parser.add_argument('--workers', type=int, help='number of data loading workers', default=0)
-    parser.add_argument('--batch_size', type=int, default=192, help='input batch size')
+    parser.add_argument('--batch_size', type=int, default=64, help='input batch size')
     parser.add_argument('--saved_model', default='saved_models/TPS-ResNet-BiLSTM-Attn-Seed1111/best_accuracy.pth', help="path to saved_model to evaluation")
     """ Data processing """
     parser.add_argument('--batch_max_length', type=int, default=16, help='maximum-label-length')
@@ -270,7 +270,9 @@ if __name__ == '__main__':
     parser.add_argument('--hidden_size', type=int, default=256, help='the size of the LSTM hidden state')
 
     opt = parser.parse_args()
-    opt.character = '0123456789ابتثححخدذرزسشصضطظعغفقكلنهويئةء'
+    opt.character = '0123456789ابتثحخجدذرزسشصضطظعغفقكلنهويئةءؤ'
+    # opt.character = 'ئحFeءكةىT4)Oبض2زدمصرإ(Spسهآؤd%غقأط./يذ6،X7a *؟ثظ+خ-ش#جتن:ًH؛IRوـا0l9ع8ل!31فU5'
+
 
     """ vocab / character number configuration """
     if opt.sensitive:
