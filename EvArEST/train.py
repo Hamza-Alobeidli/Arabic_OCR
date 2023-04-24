@@ -12,6 +12,8 @@ import torch.optim as optim
 import torch.utils.data
 from torch.utils.data import Subset
 from torch._utils import _accumulate
+# import matplotlib.pyplot as plt
+
 
 import numpy as np
 
@@ -37,20 +39,22 @@ def train(opt):
     AlignCollate_valid = AlignCollate(imgH=opt.imgH, imgW=opt.imgW, keep_ratio_with_pad=opt.PAD)
     valid_dataset, valid_dataset_log = hierarchical_dataset(root=opt.valid_data, opt=opt)
     #_____________________________________________________________________________________
+    # valid_dataset = train_dataset.valid
+
     #Split test into validation set
-    total_number_dataset = len(valid_dataset)
-    number_dataset = int(total_number_dataset * float(0.3))
-    dataset_split = [number_dataset, total_number_dataset - number_dataset]
-    indices = range(total_number_dataset)
-    valid_dataset, _ = [Subset(valid_dataset, indices[offset - length:offset])
-                   for offset, length in zip(_accumulate(dataset_split), dataset_split)]
+    # total_number_dataset = len(valid_dataset)
+    # number_dataset = int(total_number_dataset * float(0.3))
+    # dataset_split = [number_dataset, total_number_dataset - number_dataset]
+    # indices = range(total_number_dataset)
+    # valid_dataset, _ = [Subset(valid_dataset, indices[offset - length:offset])
+    #                for offset, length in zip(_accumulate(dataset_split), dataset_split)]
     #_____________________________________________________________________________________
     valid_loader = torch.utils.data.DataLoader(
         valid_dataset, batch_size=opt.batch_size,
         shuffle=True,  # 'True' to check training progress with validation function.
         num_workers=int(opt.workers),
         collate_fn=AlignCollate_valid, pin_memory=True)
-    # log.write(valid_dataset_log)
+    log.write(valid_dataset_log)
     print('-' * 80)
     log.write('-' * 80 + '\n')
     log.close()
@@ -154,6 +158,11 @@ def train(opt):
     best_norm_ED = -1
     iteration = start_iter
 
+    # valid_acc_hist = []
+    # train_loss_hist = []
+    # valid_loss_hist = []
+    # batchN_hist = []
+
     while(True):
         # train part
         image_tensors, labels = train_dataset.get_batch()
@@ -163,7 +172,8 @@ def train(opt):
 
         if 'CTC' in opt.Prediction:
             preds = model(image, text)
-            preds_size = torch.IntTensor([preds.size(1)] * batch_size)
+            preds_siz
+            e = torch.IntTensor([preds.size(1)] * batch_size)
             if opt.baiduCTC:
                 preds = preds.permute(1, 0, 2)  # to use CTCLoss format
                 cost = criterion(preds, text, preds_size, length) / batch_size
@@ -200,6 +210,12 @@ def train(opt):
 
                 current_model_log = f'{"Current_accuracy":17s}: {current_accuracy:0.3f}, {"Current_norm_ED":17s}: {current_norm_ED:0.2f}'
 
+                # valid_acc_hist.append(current_accuracy)
+                # train_loss_hist.append(loss_avg.val())
+                # valid_loss_hist.append(valid_loss.cpu().numpy())
+                # batchN_hist.append(current_norm_ED)
+
+
                 # keep best accuracy model (on valid dataset)
                 if current_accuracy > best_accuracy:
                     best_accuracy = current_accuracy
@@ -234,6 +250,36 @@ def train(opt):
 
         if (iteration + 1) == opt.num_iter:
             print('end the training')
+            # # Plot the validation accuracy history
+            # plt.plot(valid_acc_hist)
+            # plt.title('Test Accuracy History')
+            # plt.xlabel('Epoch')
+            # plt.ylabel('Accuracy')
+            # plt.savefig('tacc.png')
+            # plt.clf()
+
+            # # Plot the validation accuracy history
+            # plt.plot(train_loss_hist)
+            # plt.title('Train Loss History')
+            # plt.xlabel('Epoch')
+            # plt.ylabel('Loss')
+            # plt.savefig('trainloss.png')
+            # plt.clf()
+
+            # # Plot the validation accuracy history
+            # plt.plot(batchN_hist)
+            # plt.title('Batch Norm History')
+            # plt.xlabel('Epoch')
+            # plt.ylabel('Accuracy')
+            # plt.savefig('bn.png')
+            # plt.clf()
+
+            # # Plot the validation loss history
+            # plt.plot(valid_loss_hist)
+            # plt.title('Test Loss History')
+            # plt.xlabel('Epoch')
+            # plt.ylabel('Loss')
+            # plt.savefig('testloss.png')
             sys.exit()
         iteration += 1
 
@@ -241,12 +287,12 @@ def train(opt):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--exp_name', help='Where to store logs and models')
-    parser.add_argument('--train_data', default='dataset/train_ar', help='path to training dataset')
+    parser.add_argument('--train_data', default='dataset/training_ar', help='path to training dataset')
     parser.add_argument('--valid_data', default='dataset/test_ar', help='path to validation dataset')
     parser.add_argument('--manualSeed', type=int, default=1111, help='for random seed setting')
     parser.add_argument('--workers', type=int, help='number of data loading workers', default=0)
-    parser.add_argument('--batch_size', type=int, default=64, help='input batch size')
-    parser.add_argument('--num_iter', type=int, default=30000, help='number of iterations to train for')
+    parser.add_argument('--batch_size', type=int, default=16, help='input batch size')
+    parser.add_argument('--num_iter', type=int, default=150000, help='number of iterations to train for')
     parser.add_argument('--valInterval', type=int, default=2000, help='Interval between each validation')
     parser.add_argument('--saved_model', default='saved_models/TPS-ResNet-BiLSTM-Attn-Seed1111/best_accuracy.pth', help="path to model to continue training")
     parser.add_argument('--FT', action='store_true', help='whether to do fine-tuning')
@@ -258,15 +304,15 @@ if __name__ == '__main__':
     parser.add_argument('--grad_clip', type=float, default=5, help='gradient clipping value. default=5')
     parser.add_argument('--baiduCTC', action='store_true', help='for data_filtering_off mode')
     """ Data processing """
-    parser.add_argument('--select_data', type=str, default='/',
+    parser.add_argument('--select_data', type=str, default='EV-ML',
                         help='select training data (default is MJ-ST, which means MJ and ST used as training data)')
-    parser.add_argument('--batch_ratio', type=str, default='1',
+    parser.add_argument('--batch_ratio', type=str, default='0.5-0.5',
                         help='assign ratio for each selected data in the batch')
-    parser.add_argument('--total_data_usage_ratio', type=str, default='1.0',
+    parser.add_argument('--total_data_usage_ratio', type=str, default='1',
                         help='total data usage ratio, this ratio is multiplied to total number of data.')
-    parser.add_argument('--batch_max_length', type=int, default=16, help='maximum-label-length')
-    parser.add_argument('--imgH', type=int, default=32, help='the height of the input image')
-    parser.add_argument('--imgW', type=int, default=100, help='the width of the input image')
+    parser.add_argument('--batch_max_length', type=int, default=20, help='maximum-label-length')
+    parser.add_argument('--imgH', type=int, default=64, help='the height of the input image')
+    parser.add_argument('--imgW', type=int, default=256, help='the width of the input image')
     parser.add_argument('--rgb', action='store_true', help='use rgb input')
     parser.add_argument('--character', type=str,
                         default='0123456789abcdefghijklmnopqrstuvwxyz', help='character label')
@@ -287,7 +333,6 @@ if __name__ == '__main__':
     parser.add_argument('--hidden_size', type=int, default=256, help='the size of the LSTM hidden state')
 
     # parser.add_argument('-f') #Add an dummy parser argument in the code
-    # opt.saved_model = ''
     opt = parser.parse_args()
 
     if not opt.exp_name:
@@ -298,8 +343,13 @@ if __name__ == '__main__':
     os.makedirs(f'./saved_models/{opt.exp_name}', exist_ok=True)
 
     """ vocab / character number configuration """
-    # opt.character = 'ئحFeءكةىT4)Oبض2زدمصرإ(Spسهآؤd%غقأط./يذ6،X7a *؟ثظ+خ-ش#جتن:ًH؛IRوـا0l9ع8ل!31فU5'
-    opt.character = '0123456789ابتثحخجدذرزسشصضطظعغفقكلنهويئةءؤ'
+    opt.saved_model = ''
+    # opt.character = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzئحءكةى4)0بض2زدمصرإ(سهآؤ%غقأط./يذ6،7 *؟ثظ+خ-ش#جتن؛وا9ع8ل!31ف5'
+    opt.character = 'ئحءكةى4)0بض2زدمصرإ(سهآؤ%غقأط./يذ6،7 *؟ثظ+خ-ش#جتن؛وا9ع8ل!31ف5'
+    
+    # opt.character = '%0123456789ابتثحخجدذرزسشصضطظعغفقكلنهويئةءؤ'
+    # opt.character = 'ئحءكةى4)0بض2زدمصرإ(سهآؤ%غقأط./يذ6،7 *؟ثظ+خ-ش#جتن؛وا9ع8ل!31ف٠١٢٣٤٥٦٧٨٩5'
+
     if opt.sensitive:
         # opt.character += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
         opt.character = string.printable[:-6]  # same with ASTER setting (use 94 char).
