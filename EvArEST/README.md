@@ -19,19 +19,13 @@ pip3 install lmdb pillow torchvision nltk natsort
 
 
 ### Run demo with pretrained model
-1. Download pretrained model from [here](https://drive.google.com/drive/folders/15WPsuPJDCzhp2SvYZLRj8mAlT3zmoAMW)
-2. Add image files to test into `demo_image/`
-3. Run demo.py (add `--sensitive` option if you use case-sensitive model)
-```
-CUDA_VISIBLE_DEVICES=0 python3 demo.py \
---Transformation TPS --FeatureExtraction ResNet --SequenceModeling BiLSTM --Prediction Attn \
---image_folder demo_image/ \
---saved_model TPS-ResNet-BiLSTM-Attn.pth
-```
+1. Download pretrained model from [here](https://drive.google.com/file/d/1CRRLXQuLrMbsOiAvWC-ktcz156M4YrC1/view?usp=sharing)
+2. Move the pretrained to saved_models folder
+3. Add image files to test into `demo_image/`
+4. Run demo.ipynb
 
 #### prediction results
 
-| demo images | [TRBA (**T**PS-**R**esNet-**B**iLSTM-**A**ttn)](https://drive.google.com/open?id=1b59rXuGGmKne1AuHnkgDzoYgKeETNMv9) | [TRBA (case-sensitive version)](https://drive.google.com/open?id=1ajONZOgiG9pEYsQ-eBmgkVbMDuHgPCaY) |
 | ---         |     ---      |          --- |
 | <img src="./demo_image/demo_1.png" width="300">    |   available   |  Available   |
 | <img src="./demo_image/demo_2.jpg" width="300">      |    shakeshack    |   SHARESHACK    |
