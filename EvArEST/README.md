@@ -1,7 +1,7 @@
 # What Is Wrong With Scene Text Recognition Model Comparisons? Dataset and Model Analysis
-| [paper](https://arxiv.org/abs/1904.01906) | [training and evaluation data](https://github.com/clovaai/deep-text-recognition-benchmark#download-lmdb-dataset-for-traininig-and-evaluation-from-here) | [failure cases and cleansed label](https://github.com/clovaai/deep-text-recognition-benchmark#download-failure-cases-and-cleansed-label-from-here) | [pretrained model](https://www.dropbox.com/sh/j3xmli4di1zuv3s/AAArdcPgz7UFxIHUuKNOeKv_a?dl=0)
+| [paper](https://arxiv.org/abs/1904.01906) | [training and testing data](https://github.com/HGamal11/EvArEST-dataset-for-Arabic-scene-text) | [pretrained model](https://www.dropbox.com/sh/j3xmli4di1zuv3s/AAArdcPgz7UFxIHUuKNOeKv_a?dl=0)
 
-Official PyTorch implementation of our four-stage STR framework, that most existing STR models fit into. <br>
+Official PyTorch implementation of four-stage STR framework, that most existing STR models fit into. <br>
 Using this framework allows for the module-wise contributions to performance in terms of accuracy, speed, and memory demand, under one consistent set of training and evaluation datasets. <br>
 Such analyses clean up the hindrance on the current comparisons to understand the performance gain of the existing modules. <br><br>
 <img src="./figures/trade-off.png" width="1000" title="trade-off">
@@ -14,9 +14,10 @@ In the paper, expriments were performed with **PyTorch 0.4.1, CUDA 9.0**.
 ```
 pip3 install lmdb pillow torchvision nltk natsort
 ```
-
-### Download EvAREst dataset for traininig and testing from [here](https://drive.google.com/file/d/1d9wT0khAe4f3SZgAI79z6snbMbpZHPvA/view?usp=share_link)
-
+or it can be performed by the environment.yml file that is provided.
+```
+conda env create -f environment.yml
+```
 
 ### Run demo with pretrained model
 1. Download pretrained model from [here](https://drive.google.com/file/d/1CRRLXQuLrMbsOiAvWC-ktcz156M4YrC1/view?usp=sharing)
@@ -40,11 +41,11 @@ pip3 install lmdb pillow torchvision nltk natsort
 
 
 ### Training and evaluation
+### Download EvAREst dataset for traininig and testing from [here](https://github.com/HGamal11/EvArEST-dataset-for-Arabic-scene-text)
 1. Train CRNN[10] model
 ```
 CUDA_VISIBLE_DEVICES=0 python3 train.py \
 --train_data dataset/train_ar --valid_data dataset/test_ar \
---select_data / --batch_ratio 1 \
 --Transformation TPS --FeatureExtraction ResNet --SequenceModeling BiLSTM --Prediction Attn
 ```
 2. Test CRNN model. 
@@ -55,24 +56,10 @@ CUDA_VISIBLE_DEVICES=0 python3 test.py \
 --saved_model saved_models/TPS-ResNet-BiLSTM-Attn-Seed1111/best_accuracy.pth
 ```
 
-3. Try to train and test our best accuracy model TRBA (**T**PS-**R**esNet-**B**iLSTM-**A**ttn) also. ([download pretrained model](https://drive.google.com/file/d/1eM93L1FNuygc1GjO1L82iEnEHC5aPSy0/view?usp=share_link))
-```
-CUDA_VISIBLE_DEVICES=0 python3 train.py \
---train_data data_lmdb_release/training --valid_data data_lmdb_release/validation \
---select_data MJ-ST --batch_ratio 0.5-0.5 \
---Transformation TPS --FeatureExtraction ResNet --SequenceModeling BiLSTM --Prediction Attn
-```
-```
-CUDA_VISIBLE_DEVICES=0 python3 test.py \
---eval_data data_lmdb_release/evaluation --benchmark_all_eval \
---Transformation TPS --FeatureExtraction ResNet --SequenceModeling BiLSTM --Prediction Attn \
---saved_model saved_models/TPS-ResNet-BiLSTM-Attn-Seed1111/best_accuracy.pth
-```
-
 ### Arguments
 * `--train_data`: folder path to training dataset (dataset/train_ar).
-* `--valid_data`: folder path to validation dataset (dataset/test_ar) - Note, there is no validation, hence, upload test dataset then split it.
-* `--eval_data`: folder path to evaluation (with test.py) dataset (dataset/test_ar).
+* `--valid_data`: folder path to validation dataset (dataset/test_ar) 
+* `--eval_data`: folder path to evaluation (dataset/test_ar).
 * `--select_data`: select training data. default is /, which means all training data.
 * `--batch_ratio`: assign ratio for each selected data in the batch. default is 1, which means 100% of the batch is filled.
 * `--Transformation`: select Transformation module [None | TPS].
