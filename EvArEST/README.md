@@ -3,8 +3,7 @@
 
 Official PyTorch implementation of four-stage STR framework, that most existing STR models fit into. <br>
 Using this framework allows for the module-wise contributions to performance in terms of accuracy, speed, and memory demand, under one consistent set of training and evaluation datasets. <br>
-Such analyses clean up the hindrance on the current comparisons to understand the performance gain of the existing modules. <br><br>
-<img src="./figures/trade-off.png" width="1000" title="trade-off">
+
 
 ## Getting Started
 ### Dependency
@@ -28,7 +27,7 @@ conda env create -f environment.yml
 #### prediction results
 
 | ---         |     ---      |          --- |
-| <img src="./demo_image/demo_1.png" width="300">    |   available   |  Available   |
+| <img src="./demo_image_ar/word_0.png" width="300">    |   available   |  Available   |
 | <img src="./demo_image/demo_2.jpg" width="300">      |    shakeshack    |   SHARESHACK    |
 | <img src="./demo_image/demo_3.png" width="300">  |   london   |  Londen   |
 | <img src="./demo_image/demo_4.png" width="300">      |    greenstead    |   Greenstead    |
