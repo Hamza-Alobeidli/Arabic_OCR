@@ -25,15 +25,7 @@ conda env create -f environment.yml
 4. Run demo.ipynb
 
 #### prediction results
-| demo images | True Label | Predicted Label |
-| ---         |     ---      |          --- |
-| <img src="./demo_image_ar/word_0.png" width="300">    |   بكرة   |  بكرة  |
-| <img src="./demo_image_ar/word_13.png" width="300">      |    shakeshack    |   SHARESHACK    |
-| <img src="./demo_image_ar/word_56.png" width="300">  |   london   |  Londen   |
-| <img src="./demo_image_ar/word_569.png" width="300">      |    greenstead    |   Greenstead    |
-| <img src="./demo_image_ar/word_570.png" width="300" height="100">    |   toast   |  TOAST   |
-| <img src="./demo_image_ar/word_6.png" width="300" height="100">      |    merry    |   MERRY    |
-| <img src="./demo_image_ar/word_80.png" width="300">    |   underground   |   underground  |
+<img src="./figs/result_ar.png">
 
 
 ### Training and evaluation
