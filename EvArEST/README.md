@@ -25,9 +25,9 @@ conda env create -f environment.yml
 4. Run demo.ipynb
 
 #### prediction results
-| demo images | [TRBA (**T**PS-**R**esNet-**B**iLSTM-**A**ttn)](https://drive.google.com/open?id=1b59rXuGGmKne1AuHnkgDzoYgKeETNMv9) | [TRBA (case-sensitive version)](https://drive.google.com/open?id=1ajONZOgiG9pEYsQ-eBmgkVbMDuHgPCaY) |
+| demo images | True Label | Predicted Label |
 | ---         |     ---      |          --- |
-| <img src="./demo_image_ar/word_0.png" width="300">    |   available   |  Available   |
+| <img src="./demo_image_ar/word_0.png" width="300">    |   بكرة   |  بكرة  |
 | <img src="./demo_image_ar/word_13.png" width="300">      |    shakeshack    |   SHARESHACK    |
 | <img src="./demo_image_ar/word_56.png" width="300">  |   london   |  Londen   |
 | <img src="./demo_image_ar/word_569.png" width="300">      |    greenstead    |   Greenstead    |
